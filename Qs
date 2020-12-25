@@ -1,0 +1,14 @@
+
+1. Hello. What is your name?
+
+2. How much money do you have, X?
+
+3. What product would you like? (Display menu with prices.)
+
+4. What quantity of Y would you like? 
+
+5a. Z Ys costs . Your total is now TOTAL.  Would you like anything else? Y/n (loop)
+
+5b. You do not have enough money for Z Ys. Your total is TOTAL. Would you like anything else? Y/n.
+
+6. Here is your LIST. Thank you for the TOTAL. Goodbye. 
