@@ -49,7 +49,7 @@ void printCustomer(struct Customer c)
 
 struct Shop createAndStockShop()
 {
-	struct Shop shop = { 200 };
+	//struct Shop shop = { 200 };
 	FILE * fp;
 	char * line = NULL;
 	size_t len = 0;
@@ -58,16 +58,22 @@ struct Shop createAndStockShop()
 	fp = fopen("stock.csv", "r");
 	if (fp == NULL)
 		exit(EXIT_FAILURE);
+
+	read = getline(&line, &len, fp);	
+	float cash = atof(line);
+	// printf("cash in shop is %.2f\n", cash);
 	
+	struct Shop shop = { cash };
+
 	while ((read = getline(&line, &len, fp)) != -1){
 		//printf("%s IS A LINE", line);
 		char *n = strtok(line,",");
 		char *p= strtok(NULL, ",");
 		char *q = strtok(NULL, ",");
 		int quantity = atoi(q);
+		double price = atof(p);
 		char *name = malloc(sizeof(char) * 50);
 		strcpy(name, n);
-		double price = atof(p);
 		struct Product product = { name,price };
 		struct ProductStock stockItem = { product, quantity};
 		shop.stock[shop.index++] = stockItem;
