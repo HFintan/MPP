@@ -6,6 +6,9 @@
 // Then want an optional argument user file
 // This user file will issue a "demand" to the shop
 
+// Global variable
+float total;
+float budget;
 
 ///////////////////////////////////////////////////
 //// Read in shop file and extract info
@@ -25,12 +28,6 @@ struct Shop {
 	double cash;
 	struct ProductStock stock[20];
 	int index;
-};
-
-
-struct Request {
-	int itempos;
-	int itemquantity;
 };
 
 // Read in shop file
@@ -87,10 +84,8 @@ void printShop(struct Shop s)
 	}
 }
 
-//// Might come back later and make this more flexible - i.e. not hardcoded.
-//struct ProductList{
-const char *items[] = {"Apple","Bread","Coke","Dogfood","Engagement ring"};
-//}
+//// Come back later and make these more flexible - i.e. not hardcoded. FIXME
+////const char *items[] = {"Apple","Bread","Coke","Dogfood","Ethereum"};
 
 //////////////////////////////////////////////////
 // Read in customer file
@@ -114,15 +109,12 @@ void meetNgreet()
 	fgets(name,20,stdin);
 	
 	printf("\nPlease disclose your budget, %s",name);
-	float budget;
 	scanf("%f",&budget);
 	
 	if (budget >= 0.55) 
 		{printf("\n%.2f, eh? Please come in!\n",budget);}
 	else
 		{printf("You may have better luck elsewhere.\n");}
-	float total;
-	total = 0;
 }
 
 
@@ -136,17 +128,15 @@ void printMenu()
 	printf("Bread                     0.80\n");
 	printf("Coke                      1.00\n");
 	printf("Dogfood  		 10.00\n");
-	printf("Engagement ring	        100.00\n");
+	printf("Ethereum	        100.00\n");
 	printf("------------------------------\n");
 }
 
-// Show menu and ask what they want. Input: none. Output: Selection, Quantity
-
-struct Request getInfo();
-makeRequest(a, b)
+// Show menu and ask what they want. 
+// Split into separate name and quantity functions
+requestName(struct Shop shop)
 {
 	char menu_option[20]; 
-	int howmany;
 	int want;
 	printMenu();
 	printf("What would you like?\n");
@@ -156,12 +146,9 @@ makeRequest(a, b)
 	int i = 0;
 	int inLuck = 0;
 	while (i<4) {
-		if (strcmp(items[i], menu_option) == 0){
+		if (strcmp(shop.stock[i].product.name, menu_option) == 0){
 			want = i;
-			printf("%s? We sell those!\n", items[i]);
-			printf("How many would you like?\n");
-			scanf("%d", &howmany);
-			printf("You want %d %s.\n", howmany, items[i]);
+			printf("%s? We sell those!\n", shop.stock[i].product.name);
 			inLuck = 1;
 			break;
 		}
@@ -169,45 +156,73 @@ makeRequest(a, b)
 	}
 	if (inLuck == 0){
 		printf("Sorry, that doesn't appear to be an option. Please check your spelling.\n");
-		exit;
+		return 6; // greater than the number of items in the list
 	}
-	
-	struct Request R;
-	R = getInfo();
-	printf("Position: %d", R.itempos);
-	printf("\nNumber: %d", R.itemquantity);
-	return 0;
+	return i;
 }
 
-struct Request getInfo()
+// Ask how many they want.
+requestNumber()
 {
-	struct Request R;
-
-	printf("Enter number 1: ");
-	scanf("%d", &R.itempos);
-	printf("Enter quantity: ");
-	scanf("%d", &R.itemquantity);
-	return R;
+	int howmany;
+	printf("How many would you like?\n");
+	scanf("%d", &howmany);
+	return howmany;
 }
+
+double makeRequest(double total, struct Shop shop)
+{
+	int requestItem;
+	int requestQuantity;
+	double subtotal;
+	requestItem = requestName(shop);
+	if (requestItem != 6)
+		{requestQuantity = requestNumber();
+		printf("You want %d %s.\n", requestQuantity, shop.stock[requestItem].product.name);
+		if (requestQuantity > shop.stock[requestItem].quantity)
+			{printf("I'm afraid we only have %d %s. Request denied.\n", shop.stock[requestItem].quantity, shop.stock[requestItem].product.name);
+		}
+		else 
+			{subtotal = requestQuantity * shop.stock[requestItem].product.price; 
+			float pretotal;
+			pretotal = total + subtotal;
+			if (pretotal < budget)
+				{printf("That will cost %.2f. Your total is now %.2f\n", subtotal, pretotal);
+				total = pretotal;
+				printf("ARGH %d",shop.stock[requestItem].quantity-requestQuantity);
+				//shop->stock[requestItem].quantity=shop.stock[requestItem].quantity-requestQuantity;
+			}
+			else
+				{printf("That would cost %.2f. Your total is already %.2f. Your budget is %.2f. Request denied.", subtotal, total, budget);
+			}
+		}
+		return total;
+	}
+}
+
+
 
 // Calculate and check whether customer can afford; update their budget and total if so.
-void cashRegister()
-{
-	//total = 10 * howmany;
-	//printf("That will cost %.2f\n", total);
+//void cashRegister{
+//
+//}
 
-}
 
-void doingItLive()
+void doingItLive(struct Shop shop)
 {
 	meetNgreet();
-	makeRequest();
+	while (total + 0.55 < budget)
+		{total = makeRequest(total,shop);}
 }
-//////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////
+/////////////////////////// MAIN /////////////////////////////////
+//////////////////////////////////////////////////////////////////
 int main(void)
 {
 	struct Shop shop = createAndStockShop();
-	//printShop(shop);
-	doingItLive();
+	//printf("%d\n",shop.index);
+	//printf("%.2f\n",shop.cash);
+	//printf("%d\n",shop.stock[1].quantity);
+	doingItLive(shop);
 }
