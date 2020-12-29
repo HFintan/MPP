@@ -3,10 +3,13 @@
 #include <stdlib.h>
 
 // Read in file which contains info about shop.
-// Then want an optional argument user file
 // This user file will issue a "demand" to the shop
+// There will be a user menu offering a selection of
+// files to read in, or to doItLive.
+
 
 // Global variables
+// Just for the live version
 float livetotal;
 float livebudget;
 float escape; 
@@ -31,6 +34,8 @@ struct Shop {
 	int index;
 };
 
+// Structs for customer files
+
 struct Desires {
 	char* item;
 	int quantity;
@@ -41,7 +46,6 @@ struct Customer {
 	struct Desires desire;
 	char* name;
 };
-
 
 // Read in shop file
 struct Shop createAndStockShop()
