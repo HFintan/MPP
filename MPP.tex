@@ -1,5 +1,6 @@
 \documentclass{article}
-\usepackage{hyperref}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+\usepackage{url}
 \usepackage[height=8in]{geometry}
 \begin{document}
 \begin{center}
@@ -7,33 +8,45 @@
 \smallbreak
 \large{Fintan Hegarty}\\
 \smallbreak
-\large{ID no}
+\large{G00376582}
 \end{center}
 \bigskip
 \textbf{Abstract:} \textit{In this report, we examine the differences between object-oriented programming and procedural programming.}
 \tableofcontents
 \section{Introduction}
+Computer programming, from the Latin \emph{programma}, meaning to provide a computer with a set of instructions to perform a specific task, is often considered to date back to Ada Lovelace's algorithm \cite{wikicp} whereby Charles Babbage's then-unbuilt ``analytical engine'' could calculate a sequence of Bernoulli numbers. We will not delve into the semantics; the interested reader may refer to, e.g., \cite{twobithistory}. The algorithm did use such constructs as variables and repeating loops, which are fundamental programming concepts. Later, Herman Hollerith's work \cite{colombia} led to a system for storing algorithms as well as data on the ``machine'', so that these could be recalled when required for computation, rather than needing to be input for each use.
 
-\subsection{What is object-oriented programming?}
-% Examples of each type
+This sets the foundation for \emph{procedural programming}, which we shall investigate briefly, and then move on to contrast this with another programming paradigm, called \emph{object-oriented programming}.
 
 \subsection{What is procedural programming?}
 % Examples of each type
+A procedural programming language follows, in order, a set of commands. They use functions, conditional statements, and variables to enable a computer to calculate and display a desired output, or perform a certain task. 
+
+\texttt{C} is a procedural programming language, which we have used in our research.  
+\texttt{Python} is a multi-paradigm programming language, and can also handle object-oriented programs, but for this assignment, we used it as a procedural language. Other popular languages with procedural programming functionality include \texttt{ALGOL}, \texttt{Fortran} and \texttt{Pel}.
+\subsection{What is object-oriented programming?}
+% Examples of each type
+
 
 \section{Similarities between object-oriented and procedural programming}
+\subsection{Similarities in the exercise}
 
 \section{Differences between object-oriented and procedural programming}
+\subsection{Differences in our exercise}
 % Example of code from both doing the same thing
 % Juxtaposing table
 
 \section{Conclusions}
 \begin{table}
-\begin{tabular}{ccc}
+\begin{tabular}{c|c|c}
+& Procedural Programming & Object-oriented Programming \\\hline
+& & \\
 \end{tabular}
 \end{table}
 
 \section*{Acknowledgements}
+The author is grateful to Dr Dominic Carr for instruction in multi-paradigm programming, and to Microsoft Stream for inspiring him to strive for Zen-like levels of patience. 
 
-\section*{References}
-
+\bibliographystyle{alpha}
+\bibliography{MPP}
 \end{document}

@@ -1,0 +1,21 @@
+\begin{thebibliography}{Wik20}
+
+\bibitem[dC20]{colombia}
+Frank da~Cruz.
+\newblock
+  \href{http://www.columbia.edu/cu/computinghistory/hollerith.html}{Herman
+  Hollerith}, 2020.
+
+\bibitem[Tar18]{twobithistory}
+Sinclair Target.
+\newblock
+  \href{https://twobithistory.org/2018/08/18/ada-lovelace-note-g.html}{What did
+  Ada Lovelace's Program Actually Do?}, 2018.
+
+\bibitem[Wik20]{wikicp}
+Wikipedia.
+\newblock
+  \href{http://en.wikipedia.org/w/index.php?title=Computer\%20programming\&oldid=995920506}{Computer
+  programming} --- {W}ikipedia{,} the free encyclopedia, 2020.
+
+\end{thebibliography}

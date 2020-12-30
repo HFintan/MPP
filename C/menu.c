@@ -43,7 +43,7 @@ struct Desires {
 
 struct Customer {
 	double funds;
-	struct Desires desire;
+	struct Desires desire[20];
 	char* name;
 };
 
@@ -107,8 +107,40 @@ void printShop(struct Shop s)
 //////////////////////////////////////////////////
 
 // Read in customer file
+struct Customer createCustomer(const char *custname)
+{
+	FILE * fp;
+	char * line = NULL;
+	size_t len = 0;
+	ssize_t read;
 
-// Extract info from customer file
+	fp = fopen(custname, "r");
+	if (fp == NULL)
+		{printf("No file here.\n");
+		exit(EXIT_FAILURE);}
+	
+	printf("Found customer.\n");
+
+	// Budget
+	read = getline(&line, &len, fp);
+	float budget = atof(line);
+
+	struct Customer cust = { budget };
+	printf("Customer budget is %.2f", budget);
+
+	// Desired items info
+	while ((read = getline(&line, &len, fp)) != -1){
+		char *n = strtok(line,",");
+		char *p= strtok(NULL, ",");
+		char *q = strtok(NULL, ",");
+		int desired_quantity = atoi(q);
+		char *product_name = malloc(sizeof(char) * 50);
+		strcpy(product_name, n);
+		struct Desires desire = { product_name , desired_quantity};
+	}
+
+	return cust;
+}
 
 
 
@@ -120,7 +152,11 @@ void printShop(struct Shop s)
 // Find customer name, and, more importantly, budget.
 void meetNgreet()
 {
-	printf("\nHello! What is your name?\n");
+	escape = 0;
+	printf("\nHello!");
+	char thisisahack[20];
+	fgets(thisisahack,20,stdin);
+	printf("What is your name?\n");
 	char name[20];
 	fgets(name,20,stdin);
 	
@@ -153,7 +189,7 @@ void printMenu(struct Shop* shop)
 
 // Show menu and ask what they want. 
 // Split into separate name and quantity functions
-requestName(struct Shop* shop)
+int requestName(struct Shop* shop)
 {
 	char menu_option[20]; 
 	int want;
@@ -187,7 +223,7 @@ requestName(struct Shop* shop)
 }
 
 // Ask how many they want.
-requestNumber()
+int requestNumber()
 {
 	int howmany;
 	printf("How many would you like?\n");
@@ -225,6 +261,7 @@ double makeRequest(double livetotal, struct Shop* shop)
 	}
 	else if (requestItem == 7){
 		escape = 1;
+		return livetotal;
 	}
 	else if (requestItem == 6){
 		return livetotal;
@@ -244,11 +281,50 @@ void doingItLive(struct Shop *shop)
 	shop->cash=livetotal+(*shop).cash;
 }
 
+//////////////////////////////////////////////////////
+//////////////////////// TOP MENU ////////////////////
+//////////////////////////////////////////////////////
+int whoIsIt()
+{
+        int person_option;
+	printf("\nWelcome to the shop. Which customer are you? Please enter the appropriate integer. At closing time, enter 0.\n");
+	printf("(1) Mrs. Greedy\n");
+	printf("(2) Mr. Broke\n");
+	printf("(3) Mrs. A. Normal\n");
+	printf("(4) Mr. B. Normal\n");
+	printf("(5) Miss Doing It Live\n");
+        scanf("%d", &person_option);
+	return person_option;
+}
+
+
 //////////////////////////////////////////////////////////////////
 /////////////////////////// MAIN /////////////////////////////////
 //////////////////////////////////////////////////////////////////
 int main(void)
 {
 	struct Shop shop = createAndStockShop();
-	doingItLive(&shop);
+	int who;
+	who = 9;
+	while (who > 0){
+		who = whoIsIt();
+		if (who == 5){
+			doingItLive(&shop);
+		}
+// This is obnoxious, but I wasted a couple of hours trying to get
+// it to work properly, so I'm giving up.
+		else if (who == 1) {
+			createCustomer("../1.csv");
+		}
+		else if (who == 2) {
+			createCustomer("../2.csv");
+		}
+		else if (who == 3) {
+			createCustomer("../3.csv");
+		}
+		else if (who == 4) {
+			createCustomer("../4.csv");
+		}
+		// do it not live
+	}
 }
