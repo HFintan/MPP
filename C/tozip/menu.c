@@ -55,7 +55,7 @@ struct Shop createAndStockShop()
 	size_t len = 0;
 	ssize_t read;
 
-	fp = fopen("../stock.csv", "r");
+	fp = fopen("stock.csv", "r");
 	if (fp == NULL)
 		{printf("No file here.\n");
 		exit(EXIT_FAILURE);}
@@ -106,6 +106,8 @@ void printShop(struct Shop s)
 //////////// FROM CSV FILES //////////////////////
 //////////////////////////////////////////////////
 
+// PROBLEM HERE
+
 // Read in customer file
 struct Customer custOrder(const char *custname)
 {
@@ -133,33 +135,28 @@ struct Customer custOrder(const char *custname)
 	i=0;
 	struct Desires shopping_list;
 	// Desired items info	
-	//while ((read = getline(&line, &len, fp)) != -1){
-	//	char *n = strtok(line,",");
-	//	char *p= strtok(NULL, ",");
-	//	char *q = strtok(NULL, ",");
-	//	int desired_quantity = atoi(q);
-	//	char *product_name = malloc(sizeof(char) * 50);
-	//	strcpy(product_name, n);
+	while ((read = getline(&line, &len, fp)) != -1){
+		char *n = strtok(line,",");
+		char *q= strtok(NULL, ",");
+		//char *q = strtok(NULL, ",");
+		int desired_quantity = atoi(q);
+		char *product_name = malloc(sizeof(char) * 50);
+		strcpy(product_name, n);
 		//struct Desires shopping_list = { product_name , desired_quantity};
-		//struct ProductStock stockItem = { product , quantity};
+		struct ProductStock stockItem = { product_name , desired_quantity};
 		//printf("Shopping list is %d, %s", desired_quantity, product_name);
 		//cust.stock[shop.index++] = desire;
-		//struct Desires shopping_list[i] = {product_name, desired_quantity};
-	//}
-	struct Customer cust = { custName, custBudget};//, shopping_list}; //, shopping_list } ;//, shopping_list}; //, desire };
-
-//	for (int i = 1; i<5; ++i) {
-//		printf("%s",product_name);
-                                //printf("%s? We sell those!\n", (*shop).stock[i].product.name);
-//	}
+		struct Desires shopping_list = {product_name, desired_quantity};
+	}
+	struct Customer cust = { custName, custBudget}; //, shopping_list } ;//, shopping_list}; //, desire };
 
 	return cust;
-}
+};
 
 // Printing
 void printCustomer(struct Customer c)
 {
-         printf("CUSTOMER NAME: %s \n  CUSTOMER BUDGET: %.2f\n", c.name, c.funds);//, c.products[0].item);
+         printf("CUSTOMER NAME: %s \n  CUSTOMER BUDGET: %.2f\n CUSTOMER LIST: %s\n", c.name, c.funds, c.products[0].item);
 };
 //(*shop).stock[0].quantity)
 //void printShop(struct Shop s)
@@ -196,7 +193,7 @@ void meetNgreet()
 		{printf("\n%.2f, eh? Please come in!\n",livebudget);}
 	else
 		{printf("You may have better luck elsewhere.\n");}
-}
+};
 
 
 // Prints menu
@@ -214,7 +211,7 @@ void printMenu(struct Shop* shop)
 	printf("Dogfood  		 10.00                %d\n",(*shop).stock[3].quantity);
 	printf("Ethereum	        100.00                %d\n",(*shop).stock[4].quantity);
 	printf("-------------------------------------------------\n");
-}
+};
 
 // Show menu and ask what they want. 
 // Split into separate name and quantity functions
@@ -249,7 +246,7 @@ int requestName(struct Shop* shop)
 		}
 		return want;
 	}
-}
+};
 
 // Ask how many they want.
 int requestNumber()
@@ -258,7 +255,7 @@ int requestNumber()
 	printf("How many would you like?\n");
 	scanf("%d", &howmany);
 	return howmany;
-}
+};
 
 // Try to process request.
 double makeRequest(double livetotal, struct Shop* shop)
@@ -295,7 +292,7 @@ double makeRequest(double livetotal, struct Shop* shop)
 	else if (requestItem == 6){
 		return livetotal;
 	}
-}
+};
 
 /////////////////////////////////////////////////////////
 // Process nonlive order
@@ -318,7 +315,7 @@ void doingItLive(struct Shop *shop)
 	printf("Thank you, goodbye!\n");
 	printf("The shop now has a total of %.2f. A good day's work.\n", livetotal+(*shop).cash);
 	shop->cash=livetotal+(*shop).cash;
-}
+};
 
 //////////////////////////////////////////////////////
 //////////////////////// TOP MENU ////////////////////
@@ -334,7 +331,7 @@ int whoIsIt()
 	printf("(5) Miss Doing It Live\n");
         scanf("%d", &person_option);
 	return person_option;
-}
+};
 
 
 //////////////////////////////////////////////////////////////////
@@ -356,23 +353,19 @@ int main(void)
 // it to work properly, so I'm giving up. The Live method works perfectly, the import method
 // is garbage, simply because I couldn't get the imported file to save more than the last
 // line of the csv file to the struct.
-//		else if (who == 1) {
-//			NotLive = custOrder("../1.csv");
-//			float Order[5][2] = {{0.55,40},{0.8,40},{1,40},{10,20},{100,4}};
-//		}
-//		else if (who == 2) {
-//			NotLive = custOrder("../2.csv");
-//			float Order[5][2] = {{0.55,0},{0.8,0},{1,0},{10,2},{100,0}};
-//		}
-//		else if (who == 3) {
-//			NotLive = custOrder("../3.csv");
-//			float Order[5][2] = {{0.55,10},{0.8,2},{1,4},{10,2},{100,0}};
-//		}
-//		else if (who == 4) {
-//			NotLive = custOrder("../4.csv");
-//			float Order[5][2] = {{0.55,20},{0.8,3},{1,2},{10,1},{100,0}};
+		else if (who == 1) {
+			NotLive = custOrder("1.csv");
 		}
+		else if (who == 2) {
+			NotLive = custOrder("2.csv");
+		}
+		else if (who == 3) {
+			NotLive = custOrder("3.csv");
+		}
+		else if (who == 4) {
+			NotLive = custOrder("4.csv");
+		};
 		// do it not live
-		//printCustomer(NotLive);
-	}
-}
+		printCustomer(NotLive);
+	};
+};

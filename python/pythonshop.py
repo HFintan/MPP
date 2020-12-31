@@ -9,8 +9,6 @@ import pandas as pd
 # files to read in, or to doItLive.
 
 
-# Global variables
-# Just for the live version
 
 # Read in shop file and extract info
 
@@ -22,6 +20,7 @@ def createAndStockShop():
         shop_total = float(csv_file.readline())
 
     shop_stock = pd.read_csv("../stock.csv", skiprows=1, header=None)
+    return shop_total;
     # Stock for item i can be accessed with shop_stock.iloc[i-1][2]   
 
 # Reading customer info; come back to this for nonlive mode
@@ -41,14 +40,48 @@ def read_customer(file_path):
     return c;
 """
 
-#########################
-###### FROM CSV FILES ###########
-#########################
+################################
+###### FROM CSV FILES ##########
+################################
+################################
+def readCustomer(file):
+    global cust_wants
+    with open(file) as csv_file:
+        csv_read = csv.reader(csv_file, delimiter=',')
+        first_row = next(csv_read)
+        print("Customer is ",first_row[0]+", with a budget of ",first_row[1]+", and wants") 
+        cust_wants = pd.read_csv(file, skiprows=1, header=None)
+    return first_row;
 
-# Read in customer file
-
-# Extract info from customer file
-
+def processRequest(custfile):
+    printMenu()
+    first_row = readCustomer(custfile)
+    subtotal = 0;
+    total = 0;
+    nogood = 0;
+    for i in range(5):
+        print(cust_wants.iloc[i][1],cust_wants.iloc[i][0])
+    print("\n")
+    # lazy checks
+    for i in range(5):
+        if cust_wants.iloc[i][1] > shop_stock.iloc[i][2]:
+            print("Sorry, we do not have enough ", cust_wants.iloc[i][0], "to fill your order. Goodbye!")
+            subtotal = 0;
+            nogood = 1;
+            return 0;
+        else:
+            subtotal = subtotal + cust_wants.iloc[i][1] * shop_stock.iloc[i][1]
+    if subtotal > float(first_row[1]):
+        nogood = 1;
+        print("Sorry, you do not have enough money to pay for your order. You are short ", subtotal - float(first_row[1])," Goodbye!")
+    if nogood == 0:
+        for i in range(5):
+            shop_stock.loc[i,2]=shop_stock[2][i]-cust_wants.iloc[i][1]
+        total = subtotal
+    return total
+        
+          
+# shop_stock.loc[requestItem,2]=shop_stock[2][requestItem]-requestQuantity
 
 
 ###############################
@@ -83,7 +116,7 @@ def printMenu():
 # Split into separate name and quantity functions
 def requestName():
     printMenu();
-    menu_option=input("What would you like? If you wish to exit, press X.\n")
+    menu_option=input("What item would you like? If you wish to exit, press X.\n")
     print("You requested ", menu_option);
     if menu_option == "X":
         print("EXIT")
@@ -149,12 +182,45 @@ def doingItLive():
     while (livetotal + 0.54 < livebudget and escape == 0):
         livetotal = makeRequest()
     print("Thank you, goodbye!")
-    print("The shop now has a total of ", livetotal+shop_total,". A good day's work.\n");
-    shop_total=livetotal+shop_total
+#    print("The shop now has a total of ", livetotal+shop_total,". A good day's work.\n");
+#    shop_total=livetotal+shop_total
+    return livetotal;
 
+
+############################
+
+def printStart():
+    print("Welcome to the shop. Which customer are you? Please enter the appropriate integer. At closing time, enter 0.\n");
+    print("(1) Mrs. Greedy");
+    print("(2) Mr. Broke");
+    print("(3) Mrs. A. Normal");
+    print("(4) Mr. B. Normal");
+    print("(5) Miss Doing It Live");
+    customer=int(input())
+    if customer == 0:
+        return -1;
+    if customer == 5:
+        print("LIVE MODE")
+        total = doingItLive()
+        if total == 'X':
+            return 0;
+    else:
+        custfile = "../{}.csv".format(customer)
+        total = processRequest(custfile)
+    return total;
+ 
 #################################
 ############# MAIN ################
 #################################
 if __name__ == "__main__":
-    createAndStockShop()
-    doingItLive()
+    total = createAndStockShop()
+    still_open = 1
+    #doingItLive()
+    #custfile=printStart()
+    #total = total + processRequest(custfile)
+    while still_open >= 0:
+        still_open = printStart()
+        total = total + still_open
+        print("The shop's total is currently", "{:.2f}".format(float(total)))
+    print("The shop now has", "{:.2f}".format(float(total)),". A good day's work.")
+
